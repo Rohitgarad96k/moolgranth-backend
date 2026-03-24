@@ -1,5 +1,7 @@
 package com.moolgranth.backend.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +11,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -33,14 +33,22 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Allow your exact React URL
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); 
+        // THE FIX: Allow your live website domains AND your local testing environment!
+        configuration.setAllowedOrigins(Arrays.asList(
+        "https://moolgranth.com", 
+            "https://www.moolgranth.com", 
+            "http://localhost:5173"
+        )); 
         
-        // Explicitly allow PUT (for updates) and OPTIONS (for browser preflight checks)
+        // Explicitly allow methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
         
-        // Allow standard headers
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        // Allow standard headers that React and browsers send
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+        
+        // Ensure browser allows frontend to read the response
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+        
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
