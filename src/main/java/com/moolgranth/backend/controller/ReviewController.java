@@ -16,6 +16,12 @@ public class ReviewController {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    // 🌟 NEW: Get ALL reviews (Perfect for your homepage testimonials!)
+    @GetMapping
+    public ResponseEntity<List<Review>> getAllReviews() {
+        return ResponseEntity.ok(reviewRepository.findAll());
+    }
+
     // Get reviews for a specific product
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<Review>> getReviewsByProduct(@PathVariable Long productId) {
